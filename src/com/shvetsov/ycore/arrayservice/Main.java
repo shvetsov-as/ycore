@@ -7,7 +7,7 @@ public class Main {
 
         ArrayService arrService = new ArrayService(new RandomGen());
 
-        int[][] arr = arrService.getArray(3, 6);
+        int[][] arr = arrService.getArray(1, 6);
         arrService.print(arr);
         arrService.printMinMaxAvg(arr);
     }
