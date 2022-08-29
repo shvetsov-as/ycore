@@ -1,15 +1,22 @@
 package com.shvetsov.ycore.arrayservice;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class Main {
     public static void main(String[] args) {
 
         ArrayService arrService = new ArrayService(new RandomGen());
 
-        int[][] arr = arrService.getArray(1, 6);
+        int[][] arr = arrService.getArray(2, 6);
         arrService.print(arr);
-        arrService.printMinMaxAvg(arr);
+        arrService.printMinMaxAvg(arrService.calculateMinMaxAvg(arr));
     }
 }
 
@@ -43,13 +50,14 @@ class ArrayService {
 
     }
 
-    public void printMinMaxAvg(int[][] array) {
+    public Map<String, Double> calculateMinMaxAvg(int[][] array) {
 
+        Map<String, Double> arrayCalculation = new HashMap<>();
         double avg;
-        int max = array[0][0];
-        int min = array[0][0];
         double sum = 0.0D;
         double count = 0.0D;
+        double max = array[0][0];
+        double min = array[0][0];
 
         for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < array[i].length; j++) {
@@ -65,12 +73,21 @@ class ArrayService {
             }
         }
         avg = sum / count;
+
+        arrayCalculation.put("Min", min);
+        arrayCalculation.put("Max", max);
+        arrayCalculation.put("Avg", avg);
+        return arrayCalculation;
+    }
+
+    public void printMinMaxAvg(Map<String, Double> arrayCalculation) {
         System.out.println("------------------------------");
-        System.out.println(MessageFormat.format("Min value = {0}", min));
-        System.out.println(MessageFormat.format("Max value = {0}", max));
-        System.out.println(MessageFormat.format("Avg value = {0}", avg));
+        System.out.println(MessageFormat.format("Min value = {0}", arrayCalculation.get("Min")));
+        System.out.println(MessageFormat.format("Max value = {0}", arrayCalculation.get("Max")));
+        System.out.println(MessageFormat.format("Avg value = {0}", arrayCalculation.get("Avg")));
         System.out.println("------------------------------");
     }
+
 }
 
 class RandomGen {
@@ -88,5 +105,66 @@ class RandomGen {
         }
 
         return seed;
+    }
+}
+
+class RandomGenTest {
+
+    RandomGen randomGen;
+
+    @BeforeEach
+    void setUp() {
+        randomGen = new RandomGen();
+    }
+
+    @Test
+    void shouldGenerateRandInBound() {
+        for (int i = 0; i < 1000; i++) {
+            assertThat(randomGen.generate()).isGreaterThanOrEqualTo(0).isLessThanOrEqualTo(100);
+        }
+    }
+}
+
+class ArrayServiceTest {
+
+    ArrayService arrayService;
+    int[][] testArray1 = new int[][]
+            {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    int[][] testArray2 = new int[][]
+                        {{0}, {0}, {0}};
+    int[][] testArray3 = new int[][]
+            {{3, 3, 3}, {1, 1, 1}, {2, 2, 2}};
+
+    @BeforeEach
+    void setUp() {
+        arrayService = new ArrayService(new RandomGen());
+    }
+
+    @Test
+    void shouldReturnTwoDimArray() {
+        assertThat(arrayService.getArray(10, 10)).hasDimensions(10, 10);
+        assertThat(arrayService.getArray(5, 10)).hasDimensions(5, 10);
+        assertThat(arrayService.getArray(10, 5)).hasDimensions(10, 5);
+    }
+
+    @Test
+    void shouldReturnCorrectMinMaxAvg() {
+        assertThat(arrayService.calculateMinMaxAvg(testArray1)).containsEntry("Min", 1.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray1)).containsEntry("Max", 9.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray1)).containsEntry("Avg", 5.0);
+    }
+
+    @Test
+    void shouldReturnCorrectMinMaxAvg2() {
+        assertThat(arrayService.calculateMinMaxAvg(testArray2)).containsEntry("Min", 0.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray2)).containsEntry("Max", 0.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray2)).containsEntry("Avg", 0.0);
+    }
+
+    @Test
+    void shouldReturnCorrectMinMaxAvg3() {
+        assertThat(arrayService.calculateMinMaxAvg(testArray3)).containsEntry("Min", 1.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray3)).containsEntry("Max", 3.0);
+        assertThat(arrayService.calculateMinMaxAvg(testArray3)).containsEntry("Avg", 2.0);
     }
 }
