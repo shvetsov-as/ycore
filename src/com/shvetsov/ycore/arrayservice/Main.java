@@ -7,9 +7,9 @@ public class Main {
 
         ArrayService arrService = new ArrayService(new RandomGen());
 
-        int[][] arr = arrService.getArray(6, 6);
+        int[][] arr = arrService.getArray(3, 6);
         arrService.print(arr);
-        arrService.calcMinMaxAvg(arr);
+        arrService.printMinMaxAvg(arr);
     }
 }
 
@@ -21,45 +21,29 @@ class ArrayService {
         this.random = randomGen;
     }
 
-    public int[][] getArray(int dimX, int dimY) {
-        int[][] result = new int[dimX][dimY];
-        for (int i = 0; i < result[i].length - 1; i++) {
-            for (int j = 0; j < result[j].length - 1; j++) {
+    public int[][] getArray(int row, int column) {
+        int[][] result = new int[row][column];
+        for (int i = 0; i < result.length; i++) {
+            for (int j = 0; j < result[i].length; j++) {
                 result[i][j] = (int) random.generate();
             }
         }
         return result;
     }
 
-//    private int[] getOneDimArray(int dimY) {
-//        int[] result = new int[dimY];
-//        for (int i = 0; i < result.length; i++) {
-//            result[i] = (int) random.generate();
-//        }
-//        return result;
-//    }
-
     public void print(int[][] array) {
 
-        for (int i = 0; i < array[i].length - 1; i++) {
-            System.out.println();
+        for (int i = 0; i < array.length; i++) {
             System.out.print("| ");
-            for (int j = 0; j < array[j].length - 1; j++) {
+            for (int j = 0; j < array[i].length; j++) {
                 System.out.print(array[i][j] + " | ");
             }
             System.out.println();
         }
-//        for (int[] number : array) {
-//            System.out.println();
-//            System.out.print("| ");
-//            for (int i = 0; i < array.length; i++) {
-//                System.out.print(number[i] + " | ");
-//            }
-//            System.out.println();
-//        }
+
     }
 
-    public void calcMinMaxAvg(int[][] array) {
+    public void printMinMaxAvg(int[][] array) {
 
         double avg;
         int max = array[0][0];
@@ -67,8 +51,8 @@ class ArrayService {
         double sum = 0.0D;
         double count = 0.0D;
 
-        for (int i = 0; i < array[i].length - 1; i++) {
-            for (int j = 0; j < array[j].length - 1; j++) {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
                 sum = sum + array[i][j];
                 count++;
 
@@ -80,23 +64,12 @@ class ArrayService {
                 }
             }
         }
-//        for (int[] numbers : array) {
-//            for (int i = 0; i < array.length; i++) {
-//                sum = sum + numbers[i];
-//                count++;
-//
-//                if (numbers[i] > max) {
-//                    max = numbers[i];
-//                }
-//                if (numbers[i] < min) {
-//                    min = numbers[i];
-//                }
-//            }
-//        }
         avg = sum / count;
+        System.out.println("------------------------------");
         System.out.println(MessageFormat.format("Min value = {0}", min));
         System.out.println(MessageFormat.format("Max value = {0}", max));
         System.out.println(MessageFormat.format("Avg value = {0}", avg));
+        System.out.println("------------------------------");
     }
 }
 
