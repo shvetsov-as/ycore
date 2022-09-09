@@ -3,10 +3,10 @@ package com.shvetsov.ycore.arraysort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Arrays;
 import java.util.Random;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class Main {
 
@@ -69,7 +69,7 @@ class ArraySort {
         sort(array, left + 1, maxIndex); // +1 because left is pointing at barrier now, and we need lower bound of [right]
     }
 
-    private int randomIndexSelection (int minIndex, int maxIndex) {
+    private int randomIndexSelection(int minIndex, int maxIndex) {
         return new Random().nextInt(maxIndex - minIndex) + minIndex;
     }
 
@@ -85,16 +85,16 @@ class ArraySortTest {
     ArraySort arraySort;
 
     int[] test1 = new int[]
-                    {1, 2, 3, 4, 5, 6, 7, 8};
+            {1, 2, 3, 4, 5, 6, 7, 8};
     int[] test2 = new int[]
-                    {1, 2, 0, 4, 0, 0, 7, 8};
+            {1, 2, 0, 4, 0, 0, 7, 8};
     int[] test3 = new int[]
-                    {1, 0, 1, 0, 1, 0, 1, 0};
+            {1, 0, 1, 0, 1, 0, 1, 0};
     int[] test4 = new int[]
-                    {1, 2, 3, 4, -5, -6, -7, -8};
+            {1, 2, 3, 4, -5, -6, -7, -8};
     int[] test5 = new int[5];
     int[] test6 = new int[]
-                    {5, 6, 3, 2, 5, 1, 4, 9};
+            {5, 6, 3, 2, 5, 1, 4, 9};
 
     @BeforeEach
     void setUp() {
