@@ -3,7 +3,6 @@ package com.shvetsov.ycore.complexexamples;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -60,31 +59,39 @@ public class ComplexExamples {
         System.out.println("*************************************************************************");
     }
 
-
+    //*******************************TASK 1.1
     public static void removeDuplicates(Person[] personsData) {
 
-        Map<Integer, Person> mapPersons;
-        //Comparator<Person> personComparator = Comparator.comparing(Person::getName).thenComparing(Person::getId);
-        Comparator<Map.Entry<Integer, Person>> entryComparator = (o1, o2) -> {
+        Map<Integer, Person> mapPersons = Arrays.stream(personsData)
+                                                .collect(Collectors.toMap(Person::getId, e -> new Person(e.getId(), e.getName()), (o1, o2) -> o1));
+
+        List<Map.Entry<Integer, Person>> entriesList = mapPersons.entrySet().stream().sorted(nameIdComparator()).toList();
+        print(entriesList);
+    }
+
+    //*******************************TASK 1.2
+    public static void count(Person[] personsData) {
+        Map<String, Integer> personCount = new HashMap<>();
+        Integer count = 1;
+        Arrays.stream(personsData).distinct().forEach(person -> personCount.merge(person.getName(), count, Integer::sum));
+
+        for (Map.Entry<String, Integer> set : personCount.entrySet()) {
+            System.out.println("Key: " + set.getKey() + "\n" + "Value:" + set.getValue());
+        }
+    }
+
+    //Util methods *******************************
+    private static Comparator<Map.Entry<Integer, Person>> nameIdComparator() {
+        return (o1, o2) -> {
             int res = o1.getValue().getName().compareTo(o2.getValue().getName());
             if (res == 0) {
-                if (o1.getValue().getId() != Integer.MAX_VALUE && o2.getValue().getId() > -1) {
-                    return o1.getValue().getId() - (o2.getValue().getId());
-                } else {
-                    return 1;
-                }
+                return o1.getValue().getId() - o2.getValue().getId();
             }
             return res;
         };
+    }
 
-        mapPersons = Arrays.stream(personsData)
-                .collect(Collectors.toMap(Person::getId, e -> new Person(e.getId(), e.getName()), (o1, o2) -> o1));
-
-        Set<Map.Entry<Integer, Person>> entrySet = mapPersons.entrySet();
-        List<Map.Entry<Integer, Person>> entriesList = new ArrayList<>(entrySet);
-
-        entriesList.sort(entryComparator);
-
+    private static void print(List <Map.Entry<Integer, Person>> entriesList){
         int count = 1;
         int nameCount = 1;
         String currentName;
@@ -113,17 +120,6 @@ public class ComplexExamples {
             }
         }
     }
-
-    public static void count(Person[] personsData) {
-        Map<String, Integer> personCount = new HashMap<>();
-        Integer count = 1;
-        Arrays.stream(personsData).distinct().forEach(person -> personCount.merge(person.getName(), count, Integer::sum));
-
-        for (Map.Entry<String, Integer> set : personCount.entrySet()) {
-            System.out.println("Key: " + set.getKey() + "\n" + "Value:" + set.getValue());
-        }
-    }
-
 
     //*******************************TASK 2
     public int[] findPair(int[] data, int target) {
@@ -164,9 +160,6 @@ class Person {
 
     private int id;
     private String name;
-
-    public Person() {
-    }
 
     Person(int id, String name) {
         this.id = id;
@@ -259,7 +252,6 @@ class ComplexExamplesTest {
         input6 = "lw";
         input7 = "carex";
 
-
         text1 = "ca6$$#_rtwheel";
         text2 = "cartwheel";
         text3 = "cartwheel";
@@ -291,6 +283,8 @@ class ComplexExamplesTest {
 
     }
 }
+
+//Comparator<Person> personComparator = Comparator.comparing(Person::getName).thenComparing(Person::getId);
 
 
 
