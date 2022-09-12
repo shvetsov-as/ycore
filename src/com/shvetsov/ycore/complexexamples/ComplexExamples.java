@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -63,21 +63,45 @@ public class ComplexExamples {
     public static void removeDuplicates(Person[] personsData) {
 
         Map<Integer, Person> mapPersons = Arrays.stream(personsData)
-                                                .collect(Collectors.toMap(Person::getId, e -> new Person(e.getId(), e.getName()), (o1, o2) -> o1));
+                .collect(Collectors
+                        .toMap(
+                                Person::getId,
+                                e -> new Person(e.getId(), e.getName()),
+                                (o1, o2) -> o1));
 
-        List<Map.Entry<Integer, Person>> entriesList = mapPersons.entrySet().stream().sorted(nameIdComparator()).toList();
+        List<Map.Entry<Integer, Person>> entriesList = mapPersons
+                .entrySet()
+                .stream()
+                .filter(Objects::nonNull)
+                .sorted(nameIdComparator())
+                .toList();
         print(entriesList);
     }
 
     //*******************************TASK 1.2
     public static void count(Person[] personsData) {
-        Map<String, Integer> personCount = new HashMap<>();
-        Integer count = 1;
-        Arrays.stream(personsData).distinct().forEach(person -> personCount.merge(person.getName(), count, Integer::sum));
 
-        for (Map.Entry<String, Integer> set : personCount.entrySet()) {
-            System.out.println("Key: " + set.getKey() + "\n" + "Value:" + set.getValue());
-        }
+//        Map<String, Integer> personCount = new HashMap<>();
+//        Integer count = 1;
+//
+//        Arrays.stream(personsData)
+//                .filter(Objects::nonNull)
+//                .distinct()
+//                .forEach(person -> personCount.merge(person.getName(), count, Integer::sum));
+//        personCount.forEach((key, value) -> System.out.println("Key: " + key + "\n" + "Value: " + value));
+
+        Map<String, Integer> personCount = new LinkedHashMap<>();
+
+        Arrays.stream(personsData)
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted(Comparator.comparing(Person::getName))
+                .forEach(person -> {
+                    //personCount.compute(person.getName(), (key, value) -> value == null ? 1 : value + 1);
+                    personCount.putIfAbsent(person.getName(), 0);
+                    personCount.computeIfPresent(person.getName(), (key, value) -> value + 1);
+                });
+        personCount.forEach((key, value) -> System.out.println("Key: " + key + "\n" + "Value: " + value));
     }
 
     //Util methods *******************************
@@ -91,7 +115,7 @@ public class ComplexExamples {
         };
     }
 
-    private static void print(List <Map.Entry<Integer, Person>> entriesList){
+    private static void print(List<Map.Entry<Integer, Person>> entriesList) {
         int count = 1;
         int nameCount = 1;
         String currentName;
